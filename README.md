@@ -1,0 +1,2 @@
+# iexSmix
+Learning Elixir
