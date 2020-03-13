@@ -24,4 +24,29 @@ A closure always captures a specific memory location. Rebinding a variable doesn
 - Range
 - Keyword
 - HashDict
-- HashSet
+- HashSet -> MapSet
+
+## Elixir Runtime
+
+**Note:** The important thing to remember from this discussion is that at runtime, module names are atoms. And somewhere on the disk is an xyz.beam file, where xyz is the expanded form of an alias (such as Elixir.MyModule when the module is named MyModule).
+
+## Elixir Commands
+
+-Switch path (-pa)
+> $ iex -pa my/code/path -pa another/code/path
+-You can check which code paths are used at runtime by calling the Erlang function
+> :code.get_path
+
+## Pure Erlang Modules
+
+In Erlang, modules also correspond to atoms. Somewhere on the disk is a file named code.beam that contains the compiled code of the :code module. Erlang uses simple filenames, which is the reason for this call syntax. But the rules are the same as with Elixir modules. In fact, Elixir modules are nothing more than Erlang modules with fancier names (such as Elixir.MyModule).
+
+e.g. `:code.get_path`
+
+```elixir
+defmodule :my_module do
+  ...
+end
+```
+
+## Dynamically calling functions
