@@ -50,3 +50,17 @@ end
 ```
 
 ## Dynamically calling functions
+
+Kernel.apply/3 function receives three arguments: the module atom, the function atom, and the list of arguments passed to the function. Together, these three arguments, often called **MFA** (for module, function, arguments),
+
+> iex(1)> apply(IO, :puts, ["Dynamic function call."])
+
+Dynamic function call
+
+## Running Scripts
+
+If you don’t want a BEAM instance to terminate, you can provide the `--no-halt` parameter:
+
+> $ elixir --no-halt script.exs
+
+This is most often useful if your main code (outside a module) just starts concurrent tasks that perform all the work.
