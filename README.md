@@ -81,3 +81,47 @@ This is most often useful if your main code (outside a module) just starts concu
 - There are multiple ways of starting programs: iex, elixir, and the mix tool.
 
 ## Chapter 3: Control Flow
+
+### 3.2.2. [Guards](./guards.exs)
+
+- A guard can be specified by providing the `when` clause after the arguments list
+
+> Type Ordering number < atom < reference < fun < port < pid < tuple < map < list < bitstring (binary)
+
+### Guards Limitations
+
+The set of operators and functions that can be called from guards is very limited. The following operators and functions are allowed
+
+- Comparison operators (==, !=, ===, !==, >, <, <=, >=)
+- Boolean operators (and, or) and negation operators (not, !)
+- Arithmetic operators (+, -, *, /)
+- <> and ++ as long as the left side is a literal
+- `in` operator
+- Type-check functions from the Kernel module (for example, is_number/1, is_atom/1, and so on)
+- Additional Kernel function abs/1, bit_size/1, byte_size/1, div/2, elem/2, hd/1, length/1, map_size/1, node/0, node/1, rem/2, round/1, self/0, tl/1, trunc/1, and tuple_size/1
+- [Code](./guard-limitation.exs)
+
+### Multiclause Lambdas (Annonymous Functions)
+
+```elixir
+
+iex(1)> double = fn(x) -> x*2 end  <--------------- Defines a lambda
+iex(2)> double.(3) <------------------ Calls a lambda
+
+```
+
+**Syntax**
+
+```elixir
+
+fn
+    pattern_1 ->
+      ... (Execuated if pattern_1 matches)
+    pattern_1 ->
+      ... (Execuated if pattern_2 matches)
+
+    ...
+end
+
+```
+[Code Sample](./multiclause-lambdas)
