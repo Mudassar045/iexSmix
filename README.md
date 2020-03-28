@@ -125,3 +125,61 @@ end
 
 ```
 [Code Sample](./multiclause-lambdas)
+
+### Conditionals
+
+#### Branching with Multiclause Functions
+
+  ```elixir
+    defmodule TestList do
+      def empty?([]), do: true
+      def empty?([_|_]), do: false
+    end
+  ```
+
+  *Description*: The first clause matches the empty list, whereas the second clause relies on the [head | tail] representation of a non-empty list.
+
+We can implement `Polymorphic Functions` e.g.
+
+  ```elixir
+    iex(1)> defmodule Polymorphic do
+              def double(x) when is_number(x), do: 2 * x
+
+              def double(x) when is_binary(x), do: x <> x
+            end
+
+    iex(2)> Polymorphic.double(3) // 6
+
+    iex(3)> Polymorphic.double("Jar") //"JarJar"
+
+  ```
+
+*Recursive Functions*: Calculate factorial
+
+  ```elixir
+    defmodule FactorialFind do
+      def fact(0), do: 1
+      def fact(x), do: n * fact(n-1)
+    end
+  ```
+
+**File Line Counter**
+
+```elixir
+  defmodule LinesCounter do
+    def line_reader(path) do
+      File.reader(path)
+      |> line_num
+    end
+
+    defp line_num({:ok, contents}) do
+      contents
+      |> String.split("\n")
+      length
+    end
+
+    defp line_num(error), do: error
+
+  end
+
+```elixir
