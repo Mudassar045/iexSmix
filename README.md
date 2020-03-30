@@ -181,5 +181,102 @@ We can implement `Polymorphic Functions` e.g.
     defp line_num(error), do: error
 
   end
+```
 
-```elixir
+### Classical branching constructs
+
+- `if` macro Syntax:
+
+  ```exlixir
+    if condition do
+        ...
+    else
+        ...
+    end
+  ```
+
+  e.g.
+
+  ```elixir
+    def max(a, b) do
+      if a >= b do
+        a
+      else
+        b
+      end
+    end
+  ```
+
+  OR concise `if` macro Syntax:
+
+  ```elixir
+    if condition, do: something, else: another_thing
+  ```
+  
+  e.g.
+
+  ```elixir
+    def max(a, b) do
+      if a >=b, do: a, else: b
+    end
+  ```
+
+- `unless` macro Syntax:
+
+  ```elixir
+    def max(a, b) do
+      unless a >= b, do: b, else: a
+    end
+  ```
+
+- `Cond` macro Syntax:
+
+  ```elixir
+    cond do
+      expression_1 ->
+        ...
+      expression_2 ->
+        ...
+      ...
+    end
+  ```
+
+  e.g.
+
+  ```elixir
+    def max(a, b) do
+      cond do
+        a >=b -> a
+        true -> b
+      end
+    end
+  ```
+
+- `Case` macro Syntax
+
+  ```elixir
+    case expression do
+      pattern_1 ->
+        ...
+      pattern_2 ->
+        ...
+      ...
+      # default clause that always matches
+      _ -> ....
+    end
+  ```
+
+  e.g.
+
+  ```elixir
+    def max(a, b) do
+      case a >= b do
+        true -> a
+        false -> b
+      end
+    end
+  ```
+
+  **Note**: Multiclauses offer a more `declarative` feel of branching, but they require defining a separate function and passing all the necessary arguments to it. Classical constructs like if or case seem more `imperative` but can often prove simpler than the multiclause approach.
+
+### Loops and Iterations
