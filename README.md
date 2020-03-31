@@ -279,4 +279,80 @@ We can implement `Polymorphic Functions` e.g.
 
   **Note**: Multiclauses offer a more `declarative` feel of branching, but they require defining a separate function and passing all the necessary arguments to it. Classical constructs like if or case seem more `imperative` but can often prove simpler than the multiclause approach.
 
-### Loops and Iterations
+### 3.4.1 Loops and Iterations (Declarative)
+
+- Calculating the sum of the list (sum_list.ex)
+
+  ```elixir
+    defmodule ListHelper do
+      def sum([]), do: 0
+
+      def sum([head | tail]) do
+        head + sum(tail)
+      end
+    end
+  ```
+
+- Print n times natural numbers
+
+  ```elixir
+    defmodule NaturalNumber do
+      def print(0), do: IO.puts(0)
+      def print(1), do: IO.puts(1)
+
+      def print(n) do
+        print(n - 1)
+        IO.puts(n)
+      end
+    end
+  ```
+
+### 3.4.2. Tail function calls (Procedural)
+
+**Tail-Recursive**: A tail-recursive function—that is, a function that calls itself at the very end—can virtually run forever without consuming additional memory.
+
+```elixir
+  def original_fun(...) do
+    another_fun(...) <------------- Tail Call (other function or self)
+  end
+```
+
+**Note**: *Elixir (or, more precisely, Erlang) treats tail calls in a specific manner by performing a tail-call optimization. In this case, calling a function doesn’t result in the usual `stack push`. Instead, something more like a `goto` or a `jump statement` happens. You don’t allocate additional stack space before calling the function, which in turn means the tail function call consumes no additional memory.*
+
+Tail-recursive sum of the first n natural numbers (sum_list_tc.ex)
+
+```elixir
+  defmodule ListHelper do
+    def sum(list) do
+      do_sum(0, list)
+    end
+
+    defp do_sum(current_sum, []) do
+      current_sum
+    end
+
+    defp do_sum(current_sum, [head | tail]) do
+      new_sum = head + current_sum
+      do_sum(new_sum, tail)
+    end
+  end
+```
+
+Recursive function can also be implemented as
+
+```elixir
+  defp do_sum(current_sum, [head | tail]) do
+    head + current_sum
+    |> do_sum(tail)
+  end
+```
+
+**Practice Questions**:
+
+- list_len/1 function that calculates the length of a list
+
+- range/2 function that takes two integers: from and to and returns a list of all numbers in a given range
+
+- positive/1 function that takes a list and returns another list that contains only positive numbers from the input list
+
+[View Code](./practice-recursive.exs)
