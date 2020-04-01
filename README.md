@@ -356,3 +356,43 @@ Recursive function can also be implemented as
 - positive/1 function that takes a list and returns another list that contains only positive numbers from the input list
 
 [View Code](./practice-recursive.exs)
+
+### 3.4.3 Higher-order functions
+
+A `higher-order` function is a fancy name for a function that takes function(s) as its input and/or returns function(s). The word function here means `function value`. `Enum.each/2` is an example of `HOF`.
+
+```elixir
+  Enum.each(
+    [12,5,5,6],
+    fn(x) -> IO.puts(x) end            <-------- Passing a function value to another function
+  )
+```
+
+### Enumerables
+
+In Elixir, an enumerable is any data type that implements the Enumerable protocol. Lists (`[1, 2, 3]`), Maps (`%{foo: 1, bar: 2}`) and Ranges (`1..3`) are common data types used as enumerables
+
+- `Enum.sum`
+
+  ```elixir
+    iex> Enum.sum([1, 2, 3])
+    6
+
+    iex> Enum.sum(1..3)
+    6
+  ```
+
+- `Enum.map`
+
+  ```elixir
+    iex> Enum.map([1, 2, 3], fn x -> x * 2 end)
+    [2, 4, 6]
+
+    iex> Enum.map(1..3, fn x -> x * 2 end)
+    [2, 4, 6]
+
+    iex> map = %{"a" => 1, "b" => 2}
+    iex> Enum.map(map, fn {k, v} -> {k, v * 2} end)
+    [{"a", 2}, {"b", 4}]
+
+  ```
