@@ -382,6 +382,42 @@ In Elixir, an enumerable is any data type that implements the Enumerable protoco
     6
   ```
 
+- `Enum.filter`
+
+  > filter(enumerable, (element() -> as_boolean(term()))) :: list()
+  
+  `filter` is not capable of filtering and transforming an element at the same time
+
+  ```elixir
+    Enum.filter([1, 2, 3], fn x -> rem(x, 2) == 0 end)
+  ```
+
+- `Enum.find(enumerable, default \\ nil, fun)`
+
+  > find(t(), default(), (element() -> any())) :: element() | default()
+
+  ```elixir
+    iex> Enum.find([2, 3, 4], fn x -> rem(x, 2) == 1 end)
+    3
+
+    iex> Enum.find([2, 4, 6], fn x -> rem(x, 2) == 1 end)
+    nil
+    iex> Enum.find([2, 4, 6], 0, fn x -> rem(x, 2) == 1 end)
+    0
+  ```
+
+- `Enum.find_index(enumerable, fun)`
+
+  > find_index(t(), (element() -> any())) :: non_neg_integer() | nil
+
+  ```exlixir
+    iex> Enum.find_index([2, 4, 6], fn x -> rem(x, 2) == 1 end)
+    nil
+
+    iex> Enum.find_index([2, 3, 4], fn x -> rem(x, 2) == 1 end)
+    1
+  ```
+
 - `Enum.map`
 
   ```elixir
@@ -395,4 +431,34 @@ In Elixir, an enumerable is any data type that implements the Enumerable protoco
     iex> Enum.map(map, fn {k, v} -> {k, v * 2} end)
     [{"a", 2}, {"b", 4}]
 
+  ```
+
+- `Enum.flat_map(enumerable, fun)`
+
+  > flat_map(t(), (element() -> t())) :: list()
+
+  ```elixir
+    iex> Enum.flat_map([:a, :b, :c], fn x -> [x, x] end)
+      [:a, :a, :b, :b, :c, :c]
+
+    iex> Enum.flat_map([{1, 3}, {4, 6}], fn {x, y} -> x..y end)
+      [1, 2, 3, 4, 5, 6]
+
+    iex> Enum.flat_map([:a, :b, :c], fn x -> [[x]] end)
+      [[:a], [:b], [:c]]  
+  ```elixir
+
+  ```exlixir
+    strings = ["1234", "abc", "12ab"]
+
+    Enum.flat_map(strings, fn string ->
+      case Integer.parse(string) do
+        # transform to integer
+        {int, _rest} -> [int]
+        # skip the value
+        :error -> []
+      end
+    end)
+
+    # [1234, 12]
   ```
