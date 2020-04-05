@@ -372,6 +372,8 @@ A `higher-order` function is a fancy name for a function that takes function(s) 
 
 In Elixir, an enumerable is any data type that implements the Enumerable protocol. Lists (`[1, 2, 3]`), Maps (`%{foo: 1, bar: 2}`) and Ranges (`1..3`) are common data types used as enumerables
 
+**[Quick Link](https://hexdocs.pm/elixir/Enum.html)**
+
 - `Enum.sum`
 
   ```elixir
@@ -462,3 +464,38 @@ In Elixir, an enumerable is any data type that implements the Enumerable protoco
 
     # [1234, 12]
   ```
+
+- `Enum.reduce(enumerable, fun)`
+
+  > reduce(t(), (element(), acc() -> acc())) :: acc()
+
+  ```elixir
+    Enum.reduce([1, 2, 3, 4], fn x, acc -> x * acc end)
+  ```
+
+- `Enum.reduce(enumerable, acc, fun)`
+
+  > reduce(t(), any(), (element(), any() -> any())) :: any()
+
+  ```elixir
+    Enum.reduce([1, 2, 3], 0, fn x, acc -> x + acc end)
+  ```
+
+  **Reduce as a building block**
+
+  Reduce (sometimes called `fold`) is a basic building block in functional programming. Almost all of the functions in the Enum module can be implemented on top of reduce. Those functions often rely on other operations, such as Enum.`reverse/1`, which are optimized by the runtime.
+
+  ```elixir
+  def my_map(enumerable, fun) do
+    enumerable
+    |> Enum.reduce([], fn x, acc -> [fun.(x) | acc] end)
+    |> Enum.reverse()
+    end
+  ```
+
+### Comprehensions
+
+### Streams
+
+Streams are a `special` kind of enumerables that can be useful for doing lazy composable operations over anything enumerable.
+
