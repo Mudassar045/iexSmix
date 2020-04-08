@@ -497,5 +497,69 @@ In Elixir, an enumerable is any data type that implements the Enumerable protoco
 
 ### Streams
 
-Streams are a `special` kind of enumerables that can be useful for doing lazy composable operations over anything enumerable.
+Streams are a `special` kind of enumerables that can be useful for doing lazy composable operations over anything enumerable. A stream is a `lazy enumerable`, which means it produces the actual result on demand.
 
+```elixir
+
+ iex(1)> streams = [1,2,3] |>
+            Stream.map(fn x -> x*2 end)
+
+  #Stream<[enum: [1, 2, 3], funs: [#Function<48.35876588/1 in Stream.map/2>]]>
+
+
+iex(2)> Enum.to_list(streams)
+  [1, 4, 9]
+```
+
+**Employee Example**:
+
+```elixir
+  iex(1)> ["A", "B", "C"] |>
+          Stream.with_index |>
+          Enum.each(
+            fn ({emp, index}) ->
+              IO.puts "#{index + 1}. #{emp}"
+          end)
+  1. A
+  2. B
+  3. C
+```
+
+**Find SQRT**:
+
+```elixir
+  iex(1)> [9, -1, "foo", 25, 49]                                    |>
+          Stream.filter(&(is_number(&1) and &1 > 0))                |>
+          Stream.map(&{&1, :math.sqrt(&1)})                         |>
+          Stream.with_index                                         |>
+          Enum.each(
+              fn({{input, result}, index}) ->
+                IO.puts "#{index + 1}. sqrt(#{input}) = #{result}"
+              end
+            )
+
+  1. sqrt(9) = 3.0
+  2. sqrt(25) = 5.0
+  3. sqrt(49) = 7.0
+```
+
+### Practice Questions
+
+Using large_lines!/1 as a model, write the following function:
+
+- lines_lengths!/1 that takes a file path and returns a list of numbers, with each number representing the length of the corresponding line from the file.
+- longest_line_length!/1 that returns the length of the longest line in a file.
+- longest_line!/1 that returns the contents of the longest line in a file.
+- words_per_line!/1 that returns a list of numbers, with each number representing the word count in a file. Hint: to get the word count of a line, use length(String.split(line)).
+
+### Summary of Chapter 3
+
+- Pattern matching is a construct that attempts to match a right-side term to the left-side pattern. In the process, variables from the pattern are bound to corresponding subterms from the term. If a term doesn’t match the pattern, an error is raised.
+- Function arguments are patterns. Calling a function tries to match the provided values to the patterns specified in the function definition.
+Functions can have multiple clauses. The first clause that matches all the arguments is executed.
+- Multiclause functions are a primary tool for conditional branching, with each branch written as a separate clause. Less often, classical constructs such as if, unless, cond, and case are used.
+- Recursion is the main tool for implementing loops. Tail recursion is used when you need to run an arbitrarily long loop.
+- Higher-order functions make writing loops much easier. There are many useful generic iteration functions in the Enum module. The Stream module additionally makes it possible to implement lazy and composable iterations.
+- Comprehensions can also be used to iterate, transform, filter, and join various enumerables.
+
+## Chapter 4. Data Abstractions
