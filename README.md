@@ -571,4 +571,41 @@ Functions can have multiple clauses. The first clause that matches all the argum
 - Modifier functions return a modified version of the abstraction.
 - `Query functions` return some other type of data.
 
-**[Simple TodoList](./simple_todo.ex)**
+**[Simple TodoList](./todo_list)**
+
+### Abstraction using Struct
+
+- Define a Struct
+
+  ```elixir
+    defmodule Fraction do
+      defstruct a: nil, b: nil
+
+      ...
+    end
+  ```
+
+- Instantiate a Struct
+
+  ```elixir
+    iex(1)> one_half = %Fraction{a: 1, b: 2}
+    %Fraction{a: 1, b: 2}
+  ```
+
+- Pattern matching with Struct
+
+  ```elixir
+    iex(1)> %Fraction{a: a, b: b} = one_half
+    %Fraction{a: 1, b: 2}
+  ```
+
+- Updating Struct
+
+  ```elixir
+    iex(1)> one_quarter = %Fraction{one_half | b: 4}
+    %Fraction{a: 1, b: 4}
+  ```
+
+**[Check Fraction](./practice/fraction.ex)**
+
+### Struct vs Maps
