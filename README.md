@@ -563,3 +563,12 @@ Functions can have multiple clauses. The first clause that matches all the argum
 - Comprehensions can also be used to iterate, transform, filter, and join various enumerables.
 
 ## Chapter 4. Data Abstractions
+
+### Principles of Data Abstraction
+
+- A module is in charge of abstracting some data.
+- The module’s functions usually expect an instance of the data abstraction as the first argument.
+- Modifier functions return a modified version of the abstraction.
+- `Query functions` return some other type of data.
+
+**[Simple TodoList](./simple_todo.ex)**
