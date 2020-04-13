@@ -609,3 +609,51 @@ Functions can have multiple clauses. The first clause that matches all the argum
 **[Check Fraction](./practice/fraction.ex)**
 
 ### Struct vs Maps
+
+- Struct are also maps
+- You can't perform enumerable function over struct
+- Struct pattern can't match a plain map
+
+  ```elixir
+    iex(1)> %Fraction{} = %{a: 1, b: 2}
+    ** (MatchError) no match of right hand side value: %{a: 1, b: 2}
+  ```
+
+- A plan map pattern can match a struct
+
+  ```elixir
+    iex(1)> %{a: a, b: b} = %Fraction{a: 1, b: 2}
+    %Fraction{a: 1, b: 2}
+  ```
+
+### Records
+
+This is a facility that let’s you use tuples and still be able to access individual elements by name. Records can be defined using the `defrecord` and `defrecordp` macros from the Record
+
+### Data Transparency
+
+The benefit of data transparency is that the data can be easily inspected, which can be useful for debugging purposes.
+
+- `inspect function`
+
+  ```elixir
+    iex(2)> IO.puts(inspect(todo_list, structs: false))
+
+    %{__struct__: HashDict, root: {[], [], [],
+      [{2013, 12, 19}, %{date: {2013, 12, 19}, title: "Dentist"}],
+      [], [], [], []}, size: 1}
+  ```
+
+- `IO.inspect`
+
+  ```elixir
+    iex(1)> Fraction.new(1, 4) |>
+            IO.inspect |>
+            Fraction.add(Fraction.new(1, 4)) |>
+            IO.inspect |>
+            Fraction.add(Fraction.new(1, 2)) |>
+            IO.inspect |>
+            Fraction.value
+  ```
+
+### 4.2 Working with hierarchical data
