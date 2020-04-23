@@ -36,22 +36,59 @@ defmodule TodoList do
       entry
     end)
   end
+
+  def update_entry(
+        %TodoList{entries: entries} = todo_list,
+        entry_id,
+        updater_fun
+      ) do
+    case entries[entry_id] do
+      nil ->
+        todo_list
+
+      old_entry ->
+        # to make sure it must return a map
+        new_entry = %{} = updater_fun.(old_entry)
+        # new_entry = %{id: ^old_entry_id} = updater_fun(old_entry)
+        new_entries = Map.put(entries, new_entry.id, new_entry)
+
+        %TodoList{todo_list | entries: new_entries}
+    end
+  end
+
+  def update_entry(todo_list, %{} = new_entry) do
+    update_entry(todo_list, new_entry.id, fn _ -> new_entry end)
+  end
+
+  def delete_entry(
+        %TodoList{entries: entries} = todo_list,
+        entry_id
+      ) do
+    case entries[entry_id] do
+      nil ->
+        todo_list
+
+      old_entry ->
+        # Add new entry in the entries list
+        new_entries =
+          entries
+          # Filters entries against deletable entry
+          |> Enum.filter(fn {_, entry} ->
+            entry.id != old_entry.id
+          end)
+
+        # update the struct
+        %TodoList{todo_list | entries: new_entries}
+    end
+  end
 end
 
 # TEST FOR Console
 
 # iex(1)> todo_list = TodoList.new |>
-#          TodoList.add_entry(
-#              %{date: {2013, 12, 19}, title: "Dentist"}
-#          ) |>
-
-#          TodoList.add_entry(
-#            %{date: {2013, 12, 20}, title: "Shopping"}
-#          ) |>
-
-#          TodoList.add_entry(
-#            %{date: {2013, 12, 19}, title: "Movies"}
-#          )
+TodoList.add_entry(%{date: {2013, 12, 19}, title: "Dentist"})
+|> TodoList.add_entry(%{date: {2013, 12, 20}, title: "Shopping"})
+|> TodoList.add_entry(%{date: {2013, 12, 19}, title: "Movies"})
 
 # iex(2)> TodoList.entries(todo_list, {2013, 12, 19})
 
