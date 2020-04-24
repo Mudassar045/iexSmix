@@ -657,3 +657,53 @@ The benefit of data transparency is that the data can be easily inspected, which
   ```
 
 ### 4.2 Working with hierarchical data
+
+- Iterative updates
+
+Iteratively building the to-do list
+
+  ```elixir
+    defmodule TodoList do
+
+      # ...
+
+      def new (entries // []) do
+        Enum.reduce(
+          entries,
+          %TodoList{},
+          fn(entry, todo_list_acc) ->
+            add_entry(todo_list_acc, entry)
+          end
+        )
+      end
+
+      # ...
+
+    end
+  ```
+
+OR you can make more simple by doing `capture operator(&)`
+
+  ```elixir
+    def new (entries // []) do
+      Enum.reduce(
+        entries,
+        %TodoList{},
+        &add_entry(&2, &1)
+      )
+    end
+  ```
+
+### Exercise: importing from a file
+
+Task is to create TodoList.`CsvImporter.import("todos.csv")`
+
+**Steps:**
+
+- Open a file and go through it, removing \n from each line. Hint: use File.stream!/1, Stream.map/2, and String.replace/2. You did this in chapter 3, when we talked about streams, in the example where you filtered lines longer than 80 characters.
+
+- Parse each line obtained from the previous step into a raw tuple in the form {{year, month, date}, title}. Hint: you have to split each line using String.split/2. Then further split the first element (date), and extract the date parts. String.split/2 returns a list of strings separated by the given token. When you split the date field, you’ll have to additionally convert each date part into a number. Use String.to_integer/1 for this.
+
+- Once you have the raw tuple, create a map that represents the entry.
+
+- The output of step 3 should be an enumerable that consists of maps. Pass that enumerable to the `TodoList.new/1` function that you recently implemented.

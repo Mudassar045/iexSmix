@@ -86,9 +86,9 @@ end
 # TEST FOR Console
 
 # iex(1)> todo_list = TodoList.new |>
-TodoList.add_entry(%{date: {2013, 12, 19}, title: "Dentist"})
-|> TodoList.add_entry(%{date: {2013, 12, 20}, title: "Shopping"})
-|> TodoList.add_entry(%{date: {2013, 12, 19}, title: "Movies"})
+# TodoList.add_entry(%{date: {2013, 12, 19}, title: "Dentist"})
+# |> TodoList.add_entry(%{date: {2013, 12, 20}, title: "Shopping"})
+# |> TodoList.add_entry(%{date: {2013, 12, 19}, title: "Movies"})
 
 # iex(2)> TodoList.entries(todo_list, {2013, 12, 19})
 
