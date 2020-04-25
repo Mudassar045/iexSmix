@@ -707,3 +707,56 @@ Task is to create TodoList.`CsvImporter.import("todos.csv")`
 - Once you have the raw tuple, create a map that represents the entry.
 
 - The output of step 3 should be an enumerable that consists of maps. Pass that enumerable to the `TodoList.new/1` function that you recently implemented.
+
+### Polymorphism with protocols
+
+Polymorphism is a runtime decision about which code to execute, based on the nature of the input data. In Elixir, the basic (but not the only) way of doing this is by using the language feature called `protocols`.
+
+```elixir
+  Enum.each([1, 2, 3], &IO.puts/1)
+  Enum.each(1..3, &IO.puts/1)
+  Enum.each(hash_dict, &IO.puts/1)
+```
+
+#### Protocol Basics
+
+A `protocol` is a module in which you declare functions without implementing them. Consider it a rough equivalent of an OO interface. The generic logic relies on the protocol and calls its functions. Then you can provide a concrete implementation of the protocol for different data types.
+
+The protocol `String.Chars` is provided by the Elixir
+
+```elixir
+  defprotocol String.Chars do # Defination of the protocol
+    def to_string(anything) # Declaration of protocol functions
+  end
+```
+
+Elixir already implements the protocol for atoms, numbers, and some other data types.
+
+```elixir
+  iex(1)> String.Chars.to_string(1)
+  "1"
+  iex(2)> String.Chars.to_string(:an_atom)
+  "an_atom"
+```
+
+There is generic code that relies on the protocol. In the case of String.Chars, this is the auto-imported function `Kernel.to_string/1`:
+
+```elixir
+  iex(4)> to_string(1)
+  "1"
+
+  iex(5)> to_string(:an_atom)
+  "an_atom"
+```
+
+#### Implementing a protocol
+
+The following snippet implements `String.Chars` for integers:
+
+```elixir
+  defimpl String.Chars, for: Integer do
+    def to_string(thing) do
+      Integer.to_string(thing)
+    end
+  end
+```
