@@ -760,3 +760,54 @@ The following snippet implements `String.Chars` for integers:
     end
   end
 ```
+
+Implementing String.Chars protocol for TodoList
+
+```elixir
+  defimpl String.Chars, for: TodoList do
+
+    def to_string(_) do
+      "#TodoList"
+    end
+  end
+```
+
+### Collectable to-do list
+
+To make the abstraction collectable, you have to implement the corresponding protocol
+
+```elixir
+  defimpl Collectable, for: ExampleTodoList do
+    def into(original) do
+      {original, &into_callback/2}
+    end
+
+    defp into_callback(todo_list, {:cont, entry}) do
+      TodoList.add_entry(todo_list, entry)
+    end
+
+    defp into_callback(todo_list, :done), do: todo_list
+    defp into_callback(todo_list, :halt), do: :ok
+  end
+```
+
+Let’s see this in action. Copy/paste the about code into the shell, and then try the following:
+
+```elixir
+
+iex(1)> entries = [
+  %{date: {2013, 12, 19}, title: "Dentist"},
+  %{date: {2013, 12, 19}, title: "Painter"},
+  %{date: {2014, 12, 19}, title: "Shopkeeper"}
+]
+
+iex(2)> for entry <- entries, into: TodoList.new, do: entry # collecting into a TodoList
+
+```
+
+### 4.4 Summary
+
+- A module is used to create a data abstraction. A module’s functions create, manipulate, and query data. Clients can inspect the entire structure but shouldn’t rely on it.
+- Maps can be used to group different fields together in a single structure.
+- Structs are special kind of maps that allow you to define data abstractions related to a module.
+- Polymorphism can be implemented with protocols. A protocol defines an interface that is used by the generic logic. You can then provide specific protocol implementations for a data type.
