@@ -811,3 +811,22 @@ iex(2)> for entry <- entries, into: TodoList.new, do: entry # collecting into a 
 - Maps can be used to group different fields together in a single structure.
 - Structs are special kind of maps that allow you to define data abstractions related to a module.
 - Polymorphism can be implemented with protocols. A protocol defines an interface that is used by the generic logic. You can then provide specific protocol implementations for a data type.
+
+# The Platform
+
+## Chapter 5. Concurrency Primitives
+
+This chapter covers
+
+- Understanding BEAM concurrency principles
+- Working with processes
+- Working with stateful server processes
+- Runtime considerations
+
+### Concurrency Principles
+
+To make your system highly available, you have to tackle following challenges:
+
+- Minimize, isolate, and recover from the effects of runtime errors (`fault tolerance`).
+- Handle a load increase by adding more hardware resources without changing or redeploying the code (`scalability`).
+- Run your system on multiple machines so that others can take over if one machine crashes(`distribution`)
