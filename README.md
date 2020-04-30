@@ -830,3 +830,37 @@ To make your system highly available, you have to tackle following challenges:
 - Minimize, isolate, and recover from the effects of runtime errors (`fault tolerance`).
 - Handle a load increase by adding more hardware resources without changing or redeploying the code (`scalability`).
 - Run your system on multiple machines so that others can take over if one machine crashes(`distribution`)
+
+### Working with processes
+
+The benefits of processes are most obvious when you want to run something concurrently and parallelize the work as much as possible
+
+**Concurrency vs Parallelism:**
+
+#### Creating processes
+
+To create a process, you can use the auto-imported `spawn/1` (takes a lambda function) function:
+
+```elixir
+  spawn( fn ->
+    expression_1
+    ---
+    expression_n
+  )
+
+```
+
+e.g.
+
+```elixir
+
+iex(1)> run_query = fn(query_def) ->
+        :timer.sleep(2000)
+        "#{query_def} result"
+        end
+iex(2)> async_query = fn(query_def) ->
+        spawn(fn -> IO.puts(run_query(query_def))) end)
+        end
+iex(3)> async_query.("Hello World of Spwans")
+iex(4)> Enum.each(1..5, &async_query.("query - #{ &1 }"))
+```
