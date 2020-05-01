@@ -864,3 +864,54 @@ iex(2)> async_query = fn(query_def) ->
 iex(3)> async_query.("Hello World of Spwans")
 iex(4)> Enum.each(1..5, &async_query.("query - #{ &1 }"))
 ```
+
+#### Message passing
+
+To send a message to a process, you need to have access to its process identifier (pid). Recall from the previous section that the pid of the newly created process is the result of the `spawn/1` function. In addition, you can obtain the pid of the current process by calling the auto-imported self/1 function.
+
+```elixir
+  send_message = fn(shell_pid, message) ->
+    :timer.sleep(10000)
+    send(shell_pid, message)
+  end
+
+  async_send = fn(shell_pid, message) ->
+    spawn(fn -> send_message.(shell_pid, message) end)
+  end
+
+  async_send = fn(shell_pid, message) ->
+    spawn(fn -> send_message.(shell_pid, message) end)
+  end
+
+  # receive waits indefinitely for a new message to arrive
+  check_message = fn ->
+    receive do
+      {:Y, x } -> x + 5
+      after 4000 -> "Message didn't receive yet" # terminate receive block
+    end
+  end
+```
+
+Now run this on shell
+
+```elixir
+
+iex(1)> async_send(self, {:Y, 10})
+iex(2)> check_message.()
+```
+
+**Working of `receive` construct**:
+
+The receive construct works as follows:
+
+- Take the first message from the mailbox.
+
+- Try to match it against any of the provided patterns, going from top to bottom.
+
+- If a pattern matches the message, run the corresponding code.
+
+- If no pattern matches, put the message back into the mailbox at the same position it originally occupied. Then try the next message.
+
+- If there are no more messages in the queue, wait for a new one to arrive. When a new message arrives, start from step 1, inspecting the first message in the mailbox.
+
+- If the after clause is specified and no message arrives in the given amount of time, run the code from the after block
