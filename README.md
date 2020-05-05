@@ -915,3 +915,23 @@ The receive construct works as follows:
 - If there are no more messages in the queue, wait for a new one to arrive. When a new message arrives, start from step 1, inspecting the first message in the mailbox.
 
 - If the after clause is specified and no message arrives in the given amount of time, run the code from the after block
+
+#### Synchronous Sending
+
+Achieving synchronous message sending using asynchronous way by using process id to inform the caller and receiver what's going on.
+
+```elixir
+  send_message = fn(shell_pid, message) ->
+    :timer.sleep(1000)
+    send(shell_pid, {:query_result, message})
+  end
+
+  async_send = fn(message) ->
+    caller = self
+    spawn(fn -> send_message.(caller, message) end)
+  end
+```
+
+#### 5.3. Stateful server processes
+
+Stateful server processes resemble objects. They maintain state and can interact with other processes via messages. But a process is concurrent, so multiple server processes may run in parallel.
