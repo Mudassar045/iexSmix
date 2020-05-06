@@ -935,3 +935,69 @@ Achieving synchronous message sending using asynchronous way by using process id
 #### 5.3. Stateful server processes
 
 Stateful server processes resemble objects. They maintain state and can interact with other processes via messages. But a process is concurrent, so multiple server processes may run in parallel.
+
+A simple server function that runs forever:
+
+```elixir
+
+defmodule Database do
+  def start do
+    spawn(&loop/0) # start the loop concurrently
+  end
+
+  defp loop do
+    receive do
+    ...   # handle message
+    end
+
+    loop # keeps the looping
+  end
+
+  ...
+
+end
+```
+
+When implementing a server process, it usually makes sense to put all of its code in a single module. The functions of this module generally fall in two categories: interface and implementation.
+
+- `Interface` functions are public and are executed in the caller process. They hide the details of process creation and the communication protocol.
+
+- `Implementation` functions are usually private and run in the server process.
+
+Complete implementation of server process:
+
+```elixir
+
+defmodule DatabaseServer do
+
+  def start do
+    spawn(&loop/0) # start the loop concurrently
+  end
+
+  defp loop do
+    receive do
+      {:run_query, caller, query_def} ->
+      query_res  = run_query(query_def)
+      send(caller, {:query_result, query_res})
+    end
+    loop # keeps looping
+  end
+
+  defp run_query(query_def) do
+    :timer.sleep(2000)
+    "#{query_def} result"
+  end
+
+  def run_async(server_pid, query_def) do
+    send(server_pid, {:run_query, self, query_def})
+  end
+
+  def get_result do
+    receive do
+     {:query_result, result } -> result
+    after 5000 ->
+     {:error, :timeout}
+  end
+end
+```
+
