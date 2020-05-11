@@ -1103,3 +1103,7 @@ defmodule Calculator do
   def div(server_pid, value), do: send(server_pid, {:div, value})
 end
 ```
+
+**Tidbits:**
+
+- The role of a stateful process is to keep the data available while the system is running. The data should be modeled using pure functional abstractions. A pure `functional structure` provides many benefits, such as `integrity` and `atomicity`. Furthermore, it can be reused in various contexts and tested independently.
