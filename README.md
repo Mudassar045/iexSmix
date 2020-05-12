@@ -1107,3 +1107,39 @@ end
 **Tidbits:**
 
 - The role of a stateful process is to keep the data available while the system is running. The data should be modeled using pure functional abstractions. A pure `functional structure` provides many benefits, such as `integrity` and `atomicity`. Furthermore, it can be reused in various contexts and tested independently.
+
+#### Registered processes
+
+In order for a process to cooperate with other processes, it must know their whereabouts. In BEAM, a process is identified by the corresponding pid. To make process A send messages to process B, you have to bring the pid of process B to process A. In this sense, a pid resembles a reference or pointer in the OO world.
+
+```elixir
+iex(1)> Process.register(self, :proc)
+iex(2)> send(:proc, msg)
+iex(3)> receive do
+          msg -> IO.puts "Hello, #{msg}"
+        end
+```
+
+The following rules apply to registered processes:
+
+- The process alias can only be an atom.
+- A single process can have only one alias.
+- Two processes can’t have the same alias.
+
+### Runtime considerations
+
+- Process bottleneck
+- Unlimited process mailboxes
+- Share no memomery
+
+  the purpose of shared nothing concurrency:
+
+  - First, it simplifies the code of each individual process. Because processes don’t share memory, you don’t need complicated `synchronization` mechanisms such as locks and mutexes.
+  - Another benefit is overall `stability`: one process can’t compromise the memory of another. This in turn promotes the `integrity` and fault-tolerance of the system.
+  - Finally, shared nothing concurrency makes it possible to implement an efficient garbage collector
+- Scheduler inner working
+
+### Chapter 6. Generic server processes
+
+- Building a generic server process
+- Using gen_server
