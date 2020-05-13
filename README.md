@@ -1143,3 +1143,11 @@ The following rules apply to registered processes:
 
 - Building a generic server process
 - Using gen_server
+
+Tasks of a server process:
+
+- Spawn a separate process.
+- Run an infinite loop in the process.
+- Maintain the process state.
+- React to messages.
+- Send a response back to the caller.
