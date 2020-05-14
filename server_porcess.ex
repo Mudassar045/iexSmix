@@ -2,6 +2,7 @@ defmodule ServerProcess do
   def start(callback_module) do
     spawn(fn ->
       initial_state = callback_module.init
+      IO.inspect(initial_state)
       loop(callback_module, initial_state)
     end)
   end
@@ -16,12 +17,14 @@ defmodule ServerProcess do
           )
 
         send(caller, {:response, response})
+        IO.inspect(new_state)
         loop(callback_module, new_state)
     end
   end
 
-  def call (server_pid, request) do
+  def call(server_pid, request) do
     send(server_pid, {request, self})
+
     receive do
       {:response, response} ->
         response
@@ -30,7 +33,6 @@ defmodule ServerProcess do
 end
 
 defmodule KeyValueStore do
-
   def start do
     ServerProcess.start(KeyValueStore)
   end
@@ -51,7 +53,7 @@ defmodule KeyValueStore do
     {:ok, Map.put(state, key, value)}
   end
 
-  def handle_call({:get,key}, state) do
-    {Map.get(state, key, default \\ nil)}
+  def handle_call({:get, key}, state) do
+    {Map.get(state, key), state}
   end
 end
