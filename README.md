@@ -1151,3 +1151,43 @@ Tasks of a server process:
 - Maintain the process state.
 - React to messages.
 - Send a response back to the caller.
+
+#### Using `gen_server`
+
+Some of the compelling features provided by `gen_server` include the following:
+
+- Support for calls and casts
+- Customizable timeouts for call requests
+- Propagation of server-process crashes to client processes waiting for a response
+- Support for distributed systems
+
+#### OTP behaviours
+
+ServerProcess is a simple example of a behaviour. In Erlang terminology, a behaviour is generic code that implements a common pattern. The generic logic is exposed through the behaviour module, and you can plug into it by implementing a corresponding callback module.
+
+`OTP` ships with a few predefined behaviours:
+
+- `gen_server—Generic` implementation of a stateful server process
+- `supervisor`—Provides error handling and recovery in concurrent systems
+- `application`—Generic implementation of components and libraries
+- `gen_event`—Provides event-handling support
+- `gen_fsm`—Runs a finite state machine in a stateful server process
+
+**Note:** the gen_server behaviour requires six callback functions, but frequently you’ll need only a subset of those.
+
+```elixir
+defmodule KeyValueStore do
+  user GenServer
+end
+
+iex(1)> KeyValueStore.__info__(:functions)
+[
+  child_spec: 1,
+  code_change: 3,
+  handle_call: 3,
+  handle_cast: 2,
+  handle_info: 2,
+  init: 1,
+  terminate: 2
+]
+```
