@@ -1191,3 +1191,31 @@ iex(1)> KeyValueStore.__info__(:functions)
   terminate: 2
 ]
 ```
+
+#### Handling plain messsages
+
+Plain messages can be handle by `GenServer.handle_info` callback
+
+```elixir
+handle_info(:cleanup, state) do
+  IO.puts "cleaning up process..."
+  {:noreply, state}
+end
+
+# for any other message
+handle_info(_, state), do: {:noreply, state}
+```
+
+#### Alias registration of processes
+
+Local registration is an important feature because it supports patterns of fault-tolerance and distributed systems. You’ll see exactly how this works in later chapters, but it’s worth mentioning that you can provide the process alias as an option to `GenServer.start`:
+
+```elixir
+GenServer.start(
+  CallbackModule,
+  init_param,
+  name: :some_alias # registering process under an alias
+)
+```
+
+#### Process life cycle
