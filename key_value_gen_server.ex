@@ -1,6 +1,7 @@
 defmodule KeyValueStore do
 	use GenServer
 
+	# interface functions
 	def start do
 		GenServer.start(KeyValueStore, nil)
 	end
@@ -13,6 +14,7 @@ defmodule KeyValueStore do
 		GenServer.call(pid, {:get, key})
 	end
 
+	# over-riding callbacks
 	def init(_) do
 		:timer.send_interval(5000, :cleanup)
 		{:ok, Map.new()}
