@@ -1237,3 +1237,22 @@ gen_server is an OTP behaviour that implements a generic server process.
 - Two types of requests can be issued to a server process: calls and casts.
   - A cast is a fire-and-forget type of request—a caller sends a message and immediately moves on to do something else.
 - A call is a synchronous send-and-respond request—a caller sends a message and waits until the response arrives, the timeout occurs, or the server crashes.
+
+### Chapter 7. Building a concurrent system
+
+This chapter covers
+
+- Working with the mix project
+- Managing multiple to-do lists
+- Persisting data
+- Reasoning with processes
+
+#### Working with `mix` tool
+
+There are no hard rules regarding how files should be named and organized in mix project, but there are some preferred conventions:
+
+- You should place your modules under a common top-level alias. For example, modules might be called `Todo.List`, `Todo.Server`, and so on. - This reduces the chance of module names conflicting when you combine multiple projects into a single system.
+- In general, one file should contain one module. Occasionally, if a helper module is small and used only internally, it can be placed in the same file as the module using it. If you want to implement protocols for the module, you can do this in the same file as well.
+- A filename should be an underscore (aka `snake`) case of the main module name it implements. For example, a `TodoServer` module resides in a `todo_server.ex` file in the lib folder.
+The folder structure should correspond to multipart module names. A module called `Todo.Server` should reside in the file `lib/todo/server.ex`.
+
