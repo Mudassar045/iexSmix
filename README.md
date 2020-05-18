@@ -1219,3 +1219,21 @@ GenServer.start(
 ```
 
 #### Process life cycle
+
+![process-life-cycle](./process-life-cycle.jpg)
+
+#### The Actor Model
+
+Erlang is an accidental implementation of the Actor model originally described by Carl Hewitt. An actor is a concurrent computational entity that encapsulates state and can communicate with other actors. When processing a single message, an actor can designate the new state that will be used when processing the next message.
+
+#### 6 Summary
+
+- A generic server process is an abstraction that implements tasks common to any kind of server process, such as recursion-powered looping and message passing.
+- A generic server process can be implemented as a behaviour. A behaviour drives the process, whereas specific implementations can plug into the behaviour via callback modules.
+- The behaviour invokes callback functions when the specific implementation needs to make a decision.
+gen_server is an OTP behaviour that implements a generic server process.
+- A callback module for gen_server must implement various functions. The most frequently used ones are init/1, handle_cast/2, handle_call/3, and handle_info/2.
+- You can interact with a gen_server process with the GenServer module.
+- Two types of requests can be issued to a server process: calls and casts.
+  - A cast is a fire-and-forget type of request—a caller sends a message and immediately moves on to do something else.
+- A call is a synchronous send-and-respond request—a caller sends a message and waits until the response arrives, the timeout occurs, or the server crashes.
