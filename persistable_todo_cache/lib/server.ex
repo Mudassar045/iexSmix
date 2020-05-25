@@ -3,8 +3,8 @@ defmodule Todo.Server do
 	use GenServer
 
 	#interface methods
-	def start do
-			GenServer.start(__MODULE__, nil)
+	def start(list_key) do
+			GenServer.start(__MODULE__, list_key)
 	end
 
 	def add_entry(todo_server, new_entry) do
@@ -25,34 +25,36 @@ defmodule Todo.Server do
 
 	# overriding-callbacks
 	@impl GenServer
-	def init(_) do
-		{:ok, Todo.List.new()}
+	def init(list_key) do
+		{:ok, {list_key, Todo.Database.get(list_key) || Todo.List.new()}}
 	end
 
 	@impl GenServer
-	def handle_cast({:add_entry, new_entry}, todo_list) do
+	def handle_cast({:add_entry, new_entry}, {key, todo_list}) do
 		new_state = Todo.List.add_entry(todo_list, new_entry)
-		{:noreply, new_state}
+		Todo.Database.store(key, new_state)
+		{:noreply, {key, new_state}}
 	end
 
 	@impl GenServer
-	def handle_cast({:update_entry, entry_id, new_entry}, todo_list) do
+	def handle_cast({:update_entry, entry_id, new_entry}, {key, todo_list}) do
 		new_state = Todo.List.update_entry(todo_list, entry_id, new_entry)
-		{:noreply, new_state}
+		Todo.Database.store(key, new_state)
+		{:noreply, {key, new_state}}
 	end
 
 	@impl GenServer
-	def handle_cast({:delete_entry, entry_id}, todo_list) do
+	def handle_cast({:delete_entry, entry_id}, {key, todo_list}) do
 		new_state = Todo.List.delete_entry(todo_list, entry_id)
-		{:noreply, new_state}
+		{:noreply, {key, new_state}}
 	end
 
 	@impl GenServer
-	def handle_call({:entries, date}, _, todo_list) do
+	def handle_call({:entries, date}, _, {key, todo_list}) do
 		{
 			:reply,
 			Todo.List.entries(todo_list, date),
-			todo_list
+			{key, todo_list}
 		}
 	end
 
