@@ -26,14 +26,14 @@ defmodule Todo.Server do
 	# overriding-callbacks
 	@impl GenServer
 	def init(list_key) do
-		{:ok, {list_key, Todo.Database.get(list_key) || Todo.List.new()}}
+		IO.inspect {:ok, {list_key, Todo.Database.get(list_key) || Todo.List.new()}}
 	end
 
 	@impl GenServer
 	def handle_cast({:add_entry, new_entry}, {key, todo_list}) do
 		new_state = Todo.List.add_entry(todo_list, new_entry)
 		Todo.Database.store(key, new_state)
-		{:noreply, {key, new_state}}
+		IO.inspect {:noreply, {key, new_state}}
 	end
 
 	@impl GenServer

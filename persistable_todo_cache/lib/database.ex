@@ -26,7 +26,7 @@ defmodule Todo.Database do
 		key
 		|> file_name()
 		|> File.write!(:erlang.term_to_binary(data))
-		
+		IO.inspect data
 		{:noreply, state}
 	end
 
