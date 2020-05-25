@@ -1256,3 +1256,19 @@ There are no hard rules regarding how files should be named and organized in mix
 - A filename should be an underscore (aka `snake`) case of the main module name it implements. For example, a `TodoServer` module resides in a `todo_server.ex` file in the lib folder.
 The folder structure should correspond to multipart module names. A module called `Todo.Server` should reside in the file `lib/todo/server.ex`.
 
+#### Addressing the process bottleneck
+
+It’s obvious that you should address the bottleneck introduced by the singleton database process.
+
+- **Bypassing the process**
+- **Handling requests concurrently**
+
+![handling-requests-concurrently](./handling-requests-concurrently.jpg)
+
+- **Limiting concurrency with pooling**
+
+- **Point to be ponder**
+
+Always keep in mind that multiple processes run concurrently, whereas a single process handles requests sequentially. If computations can safely run in parallel, you should consider running them in separate processes. In contrast, if an operation must be synchronized, you’ll want to run it in a single process.
+
+#### Database connection pool
