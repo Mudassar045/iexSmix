@@ -1272,3 +1272,22 @@ It’s obvious that you should address the bottleneck introduced by the singleto
 Always keep in mind that multiple processes run concurrently, whereas a single process handles requests sequentially. If computations can safely run in parallel, you should consider running them in separate processes. In contrast, if an operation must be synchronized, you’ll want to run it in a single process.
 
 #### Database connection pool
+
+[check source code](./pooled_persistable_todo_cache)
+
+#### Reasoning with processes
+
+- `cast` vs `call`
+
+- Casts promote `system responsiveness` (because a caller isn’t blocked) at the cost of reduced consistency (because a caller doesn’t know about the outcome of the request). 
+- On the other hand, calls promote `consistency` (a caller gets a response) but reduce system responsiveness (a caller is blocked while waiting for a response).
+- Calls can also be used to apply back pressure to client processes. Because a call blocks a client, it prevents the client from generating too much work.
+
+- Using casts, clients may overload the server, and requests may pile up in the message box
+
+#### Summary: Ch07
+
+- When a system needs to perform various tasks, it’s often beneficial to run different tasks in separate processes. Doing so promotes scalability and fault-tolerance of the system.
+- A process is internally sequential and handles requests one by one. A single process can thus keep its state consistent, but it can also cause a performance bottleneck if it serves many clients.
+- Carefully consider calls versus casts. Calls are synchronous and therefore block the caller. If the response isn’t needed, casts may improve performance at the expense of reduced guarantees, because a client process doesn’t know the outcome.
+- You can use mix projects to manage more involved systems that consist of multiple modules.
