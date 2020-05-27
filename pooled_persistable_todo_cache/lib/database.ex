@@ -4,7 +4,7 @@ defmodule Todo.Database do
 	@db_folder "./persist"
 
 	def start do
-		GenServer.start(__MODULE__, nil, name: __MODULE__)
+		GenServer.start(__MODULE__, @db_folder, name: __MODULE__)
 	end
 
 	def store(key, data) do
@@ -28,8 +28,8 @@ defmodule Todo.Database do
 
 	@impl GenServer
 	def init(db_folder) do
-		File.mkdir_p!(db_folder) # make suare the folder exists
-		{:ok, start_workers()}
+		IO.inspect File.mkdir_p!(db_folder) # make suare the folder exists
+		IO.inspect {:ok, start_workers()}
 	end
 
 	# Get_worker should always return the same worker for the same key.
@@ -39,7 +39,7 @@ defmodule Todo.Database do
 	@impl GenServer
 	def handle_call({:choose_worker, key}, _, workers) do
 		worker_key = :erlang.phash2(key, 3)
-		{:reply, Map.get(workers, worker_key), workers}
+		IO.inspect {:reply, Map.get(workers, worker_key), workers}
 	end
 
 	defp start_workers() do
