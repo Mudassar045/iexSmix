@@ -1291,3 +1291,121 @@ Always keep in mind that multiple processes run concurrently, whereas a single p
 - A process is internally sequential and handles requests one by one. A single process can thus keep its state consistent, but it can also cause a performance bottleneck if it serves many clients.
 - Carefully consider calls versus casts. Calls are synchronous and therefore block the caller. If the response isn’t needed, casts may improve performance at the expense of reduced guarantees, because a client process doesn’t know the outcome.
 - You can use mix projects to manage more involved systems that consist of multiple modules.
+
+### Chapter 8. Fault-tolerance basics
+
+- Runtime errors
+- Errors in concurrent systems
+- Supervisors
+
+The aim of fault tolerance is to acknowledge the existence of `failures`, minimize their impact, and ultimately `recover` without human intervention.
+
+It’s somewhat surprising that the core tool for error handling is concurrency. `Process isolation` allows you to confine negative effects of an error to a single process or a small group of related processes, which keeps most of the system functioning normally.
+
+#### 8.1. Runtime errors
+
+When a runtime error happens, execution control is transferred up the call stack to the error-handling code. If you didn’t specify such code, then the process where the error happened is terminated.
+
+Common runtime errors can be:
+
+- One of the most common examples is a `failed pattern match`. If a match fails, an error is raised.
+- Another example is a synchronous `GenServer.call`. If the response message doesn’t arrive in a given time interval (five seconds by default), a runtime error happens.
+- Invalid arithmetic operations (such as division by zero)
+- Invocation of a nonexistent function
+- Explicit error signaling.
+
+**Error types**
+BEAM distinguishes three types of runtime errors: 
+- errors
+- exits (`exit/1` with reason) 
+- throw (`throw/1` can return the value. e.g. throw(:thrown_value))
+
+If a function explicitly raises an error, you should append the `!` character to its name e.g. `File.open!` raises an error if a file can’t be opened
+
+```elixir
+iex(1)> File.open!("nonexistent_file")
+** (File.Error) could not open non_existing_file:
+  no such file or directory
+
+# File.open, just return the information
+
+iex(1)> File.open("nonexistent_file")
+{:error, :enoent}
+```
+
+#### Link Processes
+
+- Link connects two processes at a time
+- links are always bidirectional
+- A single process can be connected to any arbitrary num of process
+
+```elixr
+  spwan(fn ->
+    spawn(fn ->
+      :timer.sleep(100)
+      IO.puts "I'm process 2 and about to finish"
+    end)
+    raise("Something went wrong")
+  end)
+```
+
+#### Trapping exits
+
+When a process is trapping exits, it isn’t taken down when a linked process crashes. Instead, an exit signal is placed in the surviving process’s message queue, in the form of a standard message. A trapping process can receive these messages and do something about the crash.
+
+This can be done by: `Process.flag(:trap_exit, true)`
+
+```elixir
+  spawn(fn ->
+    Process.flag(:trap_exit, true)
+    spawn(fn ->
+      raise("Something went wrong, Can do you do something?")
+    end)
+    receive do
+      msg -> IO.inspect(msg)
+
+      after ->
+        IO.puts "Clean up"
+      end
+    end
+  end)
+```
+
+**Note**:
+The general format of the exit signal message is `{:EXIT, from_pid, exit_reason}`, where `from_pid` is the pid of the crashed process and `exit_reason` is an arbitrary term that describes the reason for process termination. If a process is terminated due to a throw or an error, the exit reason is a tuple in form `{reason, where}`, with where containing the stack trace. Otherwise, if a process is terminated due to an exit, the reason is a term provided to exit/1.
+
+#### Monitors
+
+Sometimes you need to connect two processes A and B in such a way that process A is notified when B terminates, but not the other way around. In such cases, you can use a monitor, which is something like a `unidirectional` link. To monitor a process, you use `Process.monitor`:
+
+```elixir
+monitor_ref = Process.monitor(target_pid)
+```
+
+- The result is a unique reference that identifies the monitor.
+- A single process can create multiple monitors.
+
+If the monitored process dies, your process receives a message in the format `{:DOWN, monitor_ref, :process, from_pid, exit_reason}`. If you want to, you can also stop the monitor by calling `Process.demonitor(monitor_ref)`
+
+#### Supervisors
+
+`Links`, `exit traps`, and `monitors` make it possible to detect errors in a concurrent system. You can introduce a process whose only responsibility is to receive links and monitor notifications, and do something when a process crashes. Such processes, called `supervisors`, are the primary tool of error recovery in concurrent systems.
+
+Supervisor module works as follows:
+
+
+- The behaviour starts and runs the supervisor process.
+
+- The supervisor process traps exits.
+
+- From within the supervisor process, child processes are started and linked to the supervisor process.
+
+- If a crash happens, the supervisor process receives an exit signal and performs corrective actions, such as restarting the crashed process.
+
+- If a supervisor is terminated, child processes are terminated immediately
+
+#### Defining a Supervisor
+
+you must define a module and implement a callback function `init/1` that provides the specification—a description of the processes that are started and supervised by the supervisor process
+
+![Relationships between supervisor and worker processes](./callbackmodule-supervisor.jpg)
